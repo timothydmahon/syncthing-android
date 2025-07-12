@@ -540,6 +540,12 @@ public class RestApi {
             ImmutableMap.of("folder", folderId), null, null);
     }
 
+    public void rescanFolder(String folderId) {
+        Log.d(TAG, "rescanFolder '" + folderId + "'");
+        new PostRequest(mContext, mUrl, PostRequest.URI_DB_SCAN, mApiKey,
+                ImmutableMap.of("folder", folderId), null, null);
+    }
+
     /**
      * Rescan all folders
      */

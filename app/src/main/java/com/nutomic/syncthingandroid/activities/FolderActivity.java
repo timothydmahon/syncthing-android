@@ -306,14 +306,7 @@ public class FolderActivity extends SyncthingActivity {
                 String passedId = getIntent().getStringExtra(EXTRA_FOLDER_ID);
                 Log.d(TAG, "Initializing edit mode: folder.id=" + passedId);
                 // getApi() is unavailable (onCreate > onPostCreate > onServiceConnected)
-                List<Folder> folders = mConfig.getFolders(null);
-                mFolder = null;
-                for (Folder currentFolder : folders) {
-                    if (currentFolder.id.equals(passedId)) {
-                        mFolder = currentFolder;
-                        break;
-                    }
-                }
+                mFolder = mConfig.getFolder(null, passedId);
                 if (mFolder == null) {
                     Log.w(TAG, "Folder not found in API update, maybe it was deleted?");
                     setResult(Activity.RESULT_CANCELED);
@@ -333,10 +326,7 @@ public class FolderActivity extends SyncthingActivity {
             }
         }
 
-        if (mIsCreateMode) {
-            mEditIgnoreListTitle.setEnabled(false);
-            mEditIgnoreListContent.setEnabled(false);
-        } else {
+        if (!mIsCreateMode) {
             // Edit mode.
             mIdView.setFocusable(false);
             mIdView.setEnabled(false);
@@ -555,7 +545,6 @@ public class FolderActivity extends SyncthingActivity {
         mRunScriptSwitch.setChecked(mPreferences.getBoolean(
                 Constants.DYN_PREF_OBJECT_FOLDER_RUN_SCRIPT(mFolder.id), false
             ));
-        findViewById(R.id.editIgnoresContainer).setVisibility(mIsCreateMode ? View.GONE : View.VISIBLE);
 
         // Update views - custom sync conditions.
         mCustomSyncConditionsSwitch.setChecked(false);
@@ -684,6 +673,10 @@ public class FolderActivity extends SyncthingActivity {
                 Toast.makeText(this, R.string.folder_type_switch_to_receive_encrypted_not_allowed, Toast.LENGTH_LONG).show();
                 return;
             }
+            if(mIsCreateMode && newFolderType.equals(Constants.FOLDER_TYPE_RECEIVE_ONLY) && mEditIgnoreListContent.getText().toString().equals("")) {
+                mEditIgnoreListContent.setText("!/.stfileindex\n*");
+                mIgnoreListNeedsToUpdate = true;
+            }
             mFolder.type = newFolderType;
             updateFolderTypeDescription();
             mFolderNeedsToUpdate = true;
@@ -714,6 +707,8 @@ public class FolderActivity extends SyncthingActivity {
         if (mCanWriteToPath) {
             mAccessExplanationView.setText(R.string.folder_path_readwrite);
             mFolderTypeView.setEnabled(true);
+            mEditIgnoreListTitle.setEnabled(true);
+            mEditIgnoreListContent.setEnabled(true);
             if (mIsCreateMode) {
                 /**
                  * Suggest folder type FOLDER_TYPE_SEND_RECEIVE for folders to be created
@@ -727,9 +722,6 @@ public class FolderActivity extends SyncthingActivity {
                  * a fresh one.
                  */
                 updateFolderTypeDescription();
-            } else {
-                mEditIgnoreListTitle.setEnabled(true);
-                mEditIgnoreListContent.setEnabled(true);
             }
         } else {
             // Force "sendonly" folder.

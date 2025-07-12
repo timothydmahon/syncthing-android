@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
 import com.nutomic.syncthingandroid.R;
+import com.nutomic.syncthingandroid.activities.FilePickerActivity;
 import com.nutomic.syncthingandroid.databinding.ItemFolderListBinding;
 import com.nutomic.syncthingandroid.model.CachedFolderStatus;
 import com.nutomic.syncthingandroid.model.Folder;
@@ -27,6 +28,7 @@ import com.nutomic.syncthingandroid.util.FileUtils;
 import com.nutomic.syncthingandroid.util.Util;
 
 import java.util.Map;
+import java.util.Objects;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -63,6 +65,7 @@ public class FoldersAdapter extends ArrayAdapter<Folder> {
         binding.directory.setText(getShortPathForUI(folder.path));
         binding.override.setOnClickListener(view -> { onClickOverride(view, folder); } );
         binding.revert.setOnClickListener(view -> { onClickRevert(view, folder); } );
+        binding.selectFiles.setOnClickListener(view -> { onClickSelectFiles(view, folder); } );
         binding.openFolder.setOnClickListener(view -> { FileUtils.openFolder(mContext, folder.path); } );
 
         // Update folder icon.
@@ -73,11 +76,15 @@ public class FoldersAdapter extends ArrayAdapter<Folder> {
                 break;
             case Constants.FOLDER_TYPE_RECEIVE_ONLY:
                 drawableId = R.drawable.ic_folder_receive_only;
+                binding.selectFiles.setVisibility(VISIBLE);
                 break;
             case Constants.FOLDER_TYPE_SEND_ONLY:
                 drawableId = R.drawable.ic_folder_send_only;
                 break;
             default:
+        }
+        if (!Objects.equals(folder.type, Constants.FOLDER_TYPE_RECEIVE_ONLY)) {
+            binding.selectFiles.setVisibility(GONE);
         }
         binding.openFolder.setImageResource(drawableId);
 
@@ -323,6 +330,12 @@ public class FoldersAdapter extends ArrayAdapter<Folder> {
                 })
                 .setNegativeButton(android.R.string.no, (dialogInterface, i) -> {});
         confirmDialog.show();
+    }
+
+    private void onClickSelectFiles(View view, Folder folder) {
+        Intent intent = new Intent(mContext, FilePickerActivity.class)
+                .putExtra(FilePickerActivity.EXTRA_FOLDER_ID, folder.id);
+        mContext.startActivity(intent);
     }
 
 }

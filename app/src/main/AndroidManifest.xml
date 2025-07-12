@@ -171,6 +171,13 @@
                 android:value="splitActionBarWhenNarrow" />
         </activity>
         <activity
+            android:name=".activities.FilePickerActivity"
+            android:label="@string/file_picker_title">
+            <meta-data
+                android:name="android.support.UI_OPTIONS"
+                android:value="splitActionBarWhenNarrow" />
+        </activity>
+        <activity
             android:name=".activities.SyncConditionsActivity"
             android:label="@string/custom_sync_conditions_dialog">
             <meta-data

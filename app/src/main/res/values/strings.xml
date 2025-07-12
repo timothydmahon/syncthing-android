@@ -172,6 +172,10 @@
     <string name="suggest_file_manager_app_dialog_title">No compatible file manager app found</string>
     <string name="suggest_file_manager_app_dialog_text">We recommend you to install the open-source file manager app \'Material Files\'. Would you like to open its app store page\?</string>
 
+    <!-- File Picker -->
+    <string name="file_picker_title">File Picker</string>
+    <string name="file_picker_saved">New selection saved</string>
+
     <!-- DeviceListFragment -->
 
     <!-- Devices tab title -->

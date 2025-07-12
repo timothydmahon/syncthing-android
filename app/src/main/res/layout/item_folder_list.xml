@@ -135,16 +135,31 @@
             android:id="@+id/open_folder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/inner"
+            android:layout_alignTop="@id/inner"
+            android:layout_alignBottom="@id/inner"
             android:layout_alignParentEnd="true"
-            android:layout_alignTop="@+id/inner"
             android:background="@null"
             android:contentDescription="@string/open_file_manager"
-            android:paddingBottom="5dp"
-            android:paddingEnd="20dp"
-            android:paddingStart="30dp"
+            android:paddingStart="20dp"
             android:paddingTop="5dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="5dp"
             app:srcCompat="@drawable/baseline_folder_24" />
+
+        <ImageButton
+            android:id="@+id/select_files"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/inner"
+            android:layout_alignBottom="@id/inner"
+            android:layout_toStartOf="@id/open_folder"
+            android:background="@null"
+            android:contentDescription="@string/accept"
+            android:paddingStart="20dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="5dp"
+            app:srcCompat="@drawable/ic_file_edit_black_24dp" />
 
     </RelativeLayout>
 

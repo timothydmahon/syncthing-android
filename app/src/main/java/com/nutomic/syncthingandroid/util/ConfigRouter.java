@@ -36,6 +36,16 @@ public class ConfigRouter {
         configXml = new ConfigXml(mContext);
     }
 
+    public Folder getFolder(RestApi restApi, String folderId) {
+        List<Folder> folders = this.getFolders(restApi);
+        for (Folder currentFolder : folders) {
+            if (currentFolder.id.equals(folderId)) {
+                return currentFolder;
+            }
+        }
+        return null;
+    }
+
     public List<Folder> getFolders(RestApi restApi) {
         if (restApi == null || !restApi.isConfigLoaded()) {
             // Syncthing is not running or REST API is not (yet) available.
