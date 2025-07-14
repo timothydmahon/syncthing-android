@@ -1,6 +1,7 @@
 package com.nutomic.syncthingandroid.util;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.nutomic.syncthingandroid.model.Device;
@@ -8,9 +9,14 @@ import com.nutomic.syncthingandroid.model.Folder;
 import com.nutomic.syncthingandroid.model.FolderIgnoreList;
 import com.nutomic.syncthingandroid.model.Gui;
 import com.nutomic.syncthingandroid.model.Options;
+import com.nutomic.syncthingandroid.service.Constants;
 import com.nutomic.syncthingandroid.service.RestApi;
 import com.nutomic.syncthingandroid.util.ConfigXml;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -155,6 +161,29 @@ public class ConfigRouter {
 
         // Syncthing is running and REST API is available.
         restApi.postFolderIgnoreList(folder.id, ignore);
+    }
+
+    public void writeToIgnore(String folderPath, String[] ignore) {
+        FileOutputStream fileOutputStream = null;
+        try {
+            File file = new File(folderPath, Constants.FILENAME_STIGNORE);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            fileOutputStream = new FileOutputStream(file);
+            fileOutputStream.write(TextUtils.join("\n", ignore).getBytes(StandardCharsets.UTF_8));
+            fileOutputStream.flush();
+        } catch (IOException e) {
+            Log.w(TAG, "postFolderIgnoreList: Failed to write '" + folderPath + "/" + Constants.FILENAME_STIGNORE + "' #1", e);
+        } finally {
+            try {
+                if (fileOutputStream != null) {
+                    fileOutputStream.close();
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "postFolderIgnoreList: Failed to write '" + folderPath + "/" + Constants.FILENAME_STIGNORE + "' #2", e);
+            }
+        }
     }
 
     public List<Device> getDevices(RestApi restApi, Boolean includeLocal) {

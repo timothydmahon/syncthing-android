@@ -675,7 +675,6 @@ public class FolderActivity extends SyncthingActivity {
             }
             if(mIsCreateMode && newFolderType.equals(Constants.FOLDER_TYPE_RECEIVE_ONLY) && mEditIgnoreListContent.getText().toString().equals("")) {
                 mEditIgnoreListContent.setText("!/.stfileindex\n*");
-                mIgnoreListNeedsToUpdate = true;
             }
             mFolder.type = newFolderType;
             updateFolderTypeDescription();
@@ -847,6 +846,10 @@ public class FolderActivity extends SyncthingActivity {
         if (mIsCreateMode) {
             Log.v(TAG, "onSave: Adding folder with ID = \'" + mFolder.id + "\'");
             preCreateFolderStruct(mFolderUri, mFolder.path);
+            if (!mEditIgnoreListContent.getText().toString().equals("")) {
+                String[] ignore = mEditIgnoreListContent.getText().toString().split("\n");
+                mConfig.writeToIgnore(mFolder.path, ignore);
+            }
             mConfig.addFolder(getApi(), mFolder);
 
             // Start sync after adding a folder, see https://github.com/Catfriend1/syncthing-android/issues/974

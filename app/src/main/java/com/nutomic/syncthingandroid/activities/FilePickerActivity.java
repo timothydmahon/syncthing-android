@@ -126,26 +126,7 @@ public class FilePickerActivity extends SyncthingActivity {
             Collections.sort(selectedFiles);
         }
         selectedFiles.addAll(IGNORE_DEFAULTS);
-        FileOutputStream fileOutputStream = null;
-        try {
-            File file = new File(mFolderPath, Constants.FILENAME_STIGNORE);
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            fileOutputStream = new FileOutputStream(file);
-            fileOutputStream.write(TextUtils.join("\n", selectedFiles).getBytes(StandardCharsets.UTF_8));
-            fileOutputStream.flush();
-        } catch (IOException e) {
-            Log.w(TAG, "postFolderIgnoreList: Failed to write '" + mFolderPath + "/" + Constants.FILENAME_STIGNORE + "' #1", e);
-        } finally {
-            try {
-                if (fileOutputStream != null) {
-                    fileOutputStream.close();
-                }
-            } catch (IOException e) {
-                Log.e(TAG, "postFolderIgnoreList: Failed to write '" + mFolderPath + "/" + Constants.FILENAME_STIGNORE + "' #2", e);
-            }
-        }
+        mConfig.writeToIgnore(mFolderPath, (String[]) selectedFiles.toArray());
     }
 
     private void deleteUnselectedFiles() {
