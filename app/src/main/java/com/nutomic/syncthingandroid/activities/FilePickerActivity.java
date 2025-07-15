@@ -28,7 +28,6 @@ import com.nutomic.syncthingandroid.util.ConfigRouter;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -126,7 +125,7 @@ public class FilePickerActivity extends SyncthingActivity {
             Collections.sort(selectedFiles);
         }
         selectedFiles.addAll(IGNORE_DEFAULTS);
-        mConfig.writeToIgnore(mFolderPath, (String[]) selectedFiles.toArray());
+        mConfig.writeToIgnore(mFolderPath, selectedFiles.toArray(new String[0]));
     }
 
     private void deleteUnselectedFiles() {
